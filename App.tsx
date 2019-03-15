@@ -1,93 +1,62 @@
 import React from 'react';
-import { StyleSheet, Platform, Image, Text, View, ScrollView } from 'react-native';
+import { StyleSheet, View, ScrollView, FlatList, Text, TouchableOpacity } from 'react-native';
+import { createStackNavigator, createAppContainer } from 'react-navigation';
 
 import firebase from 'react-native-firebase';
+import { RemoteMessage } from 'react-native-firebase/messaging';
+import User from './src/interfaces/User';
+import ListUser from './src/pages/ListUser/ListUser';
+import Chat from './src/pages/Chat/Chat';
+
+const AppNavigator = createStackNavigator({
+    First: { screen: ListUser },
+    Chat,
+});
+
+const AppContainer = createAppContainer(AppNavigator);
 
 export default class App extends React.Component {
-    constructor(props) {
-        super(props);
+
+    onTokenRefreshListener;
+    messageListener;
+
+    async componentWillMount() {
+        const fcmToken = await firebase.messaging().getToken();
+        if (fcmToken) {
+            await firebase.database().ref('/token').set(fcmToken);
+        }
+
+        this.onTokenRefreshListener = firebase.messaging().onTokenRefresh(async (fcmToken) => {
+            await firebase.database().ref('/token').set(fcmToken);
+        });
+
+        const enabled = await firebase.messaging().hasPermission();
+        if (enabled) {
+            this.messageListener = firebase.messaging().onMessage((message: RemoteMessage) => {
+                let notification = new firebase.notifications.Notification()
+                    .setNotificationId('notificationId')
+                    .setTitle('My notification title')
+                    .setBody('My notification body')
+                    .setData({
+                        key1: 'value1',
+                        key2: 'value2',
+                    });
+                notification.android.setChannelId("giovanniscarpellino");
+                firebase.notifications().displayNotification(notification);
+            });
+        } else {
+            try {
+                await firebase.messaging().requestPermission();
+            } catch (error) { }
+        }
+    }
+
+    componentWillUnmount() {
+        this.onTokenRefreshListener();
+        if (this.messageListener) this.messageListener();
     }
 
     render() {
-        return (
-            <ScrollView>
-                <View style={styles.container}>
-                    <Image source={require('./assets/ReactNativeFirebase.png')} style={[styles.logo]} />
-                    <Text style={styles.welcome}>
-                        Welcome to {'\n'} React Native Firebase
-                    </Text>
-                    <Text style={styles.instructions}>
-                        To get started, edit App.js
-                    </Text>
-                    {Platform.OS === 'ios' ? (
-                        <Text style={styles.instructions}>
-                            Press Cmd+R to reload,{'\n'}
-                            Cmd+D or shake for dev menu
-                        </Text>
-                    ) : (
-                            <Text style={styles.instructions}>
-                                Double tap R on your keyboard to reload,{'\n'}
-                                Cmd+M or shake for dev menu
-                    </Text>
-                        )}
-                    <View style={styles.modules}>
-                        <Text style={styles.modulesHeader}>The following Firebase modules are pre-installed:</Text>
-                        {firebase.admob.nativeModuleExists && <Text style={styles.module}>admob()</Text>}
-                        {firebase.analytics.nativeModuleExists && <Text style={styles.module}>analytics()</Text>}
-                        {firebase.auth.nativeModuleExists && <Text style={styles.module}>auth()</Text>}
-                        {firebase.config.nativeModuleExists && <Text style={styles.module}>config()</Text>}
-                        {firebase.crashlytics.nativeModuleExists && <Text style={styles.module}>crashlytics()</Text>}
-                        {firebase.database.nativeModuleExists && <Text style={styles.module}>database()</Text>}
-                        {firebase.firestore.nativeModuleExists && <Text style={styles.module}>firestore()</Text>}
-                        {firebase.functions.nativeModuleExists && <Text style={styles.module}>functions()</Text>}
-                        {firebase.iid.nativeModuleExists && <Text style={styles.module}>iid()</Text>}
-                        {firebase.invites.nativeModuleExists && <Text style={styles.module}>invites()</Text>}
-                        {firebase.links.nativeModuleExists && <Text style={styles.module}>links()</Text>}
-                        {firebase.messaging.nativeModuleExists && <Text style={styles.module}>messaging()</Text>}
-                        {firebase.notifications.nativeModuleExists && <Text style={styles.module}>notifications()</Text>}
-                        {firebase.perf.nativeModuleExists && <Text style={styles.module}>perf()</Text>}
-                        {firebase.storage.nativeModuleExists && <Text style={styles.module}>storage()</Text>}
-                    </View>
-                </View>
-            </ScrollView>
-        );
+        return <AppContainer />;
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
-    },
-    logo: {
-        height: 120,
-        marginBottom: 16,
-        marginTop: 64,
-        padding: 10,
-        width: 135,
-    },
-    welcome: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
-    },
-    instructions: {
-        textAlign: 'center',
-        color: '#333333',
-        marginBottom: 5,
-    },
-    modules: {
-        margin: 20,
-    },
-    modulesHeader: {
-        fontSize: 16,
-        marginBottom: 8,
-    },
-    module: {
-        fontSize: 14,
-        marginTop: 4,
-        textAlign: 'center',
-    }
-});
