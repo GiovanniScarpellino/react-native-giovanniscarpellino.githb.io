@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "308696927982",
+    "firebase_url": "https://site-gio.firebaseio.com",
+    "project_id": "site-gio",
+    "storage_bucket": "site-gio.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:308696927982:android:192ad2b969e986a1",
+        "android_client_info": {
+          "package_name": "com.giovanniscarpellino.giovanniscarpellinogithubio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "308696927982-cs12t9atp81qv7b0o28nb15fscqac05m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgyis3ieukKUfF_PoECItbVi6PKgn2qY4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
