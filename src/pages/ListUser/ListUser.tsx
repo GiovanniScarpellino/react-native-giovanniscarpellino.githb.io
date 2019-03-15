@@ -39,6 +39,7 @@ export default class ListUser extends React.Component<IProps, IState> {
                         messages: data[key].messages,
                     });
                 });
+                this.setState({ users });
             }
         });
     }
@@ -58,7 +59,7 @@ export default class ListUser extends React.Component<IProps, IState> {
                             if (lastMessage.position === 'left') itemStyle = { ...itemStyle, ...styles.newMessage};
                             return (
                                 <TouchableOpacity onPress={() => this.gotToChat(item.item)} style={itemStyle}>
-                                    <Text>LAST MESSAGE: {lastMessage && lastMessage.content}</Text>
+                                    <Text>{lastMessage && lastMessage.content}</Text>
                                 </TouchableOpacity>
                             )
                         }}

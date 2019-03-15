@@ -4,6 +4,7 @@ import Message from '../../interfaces/Message';
 import { NavigationInjectedProps } from 'react-navigation';
 import firebase from 'react-native-firebase';
 import User from '../../interfaces/User';
+import { addMessage } from '../../controllers/messages';
 
 interface IProps extends NavigationInjectedProps {
 
@@ -45,9 +46,10 @@ export default class Chat extends React.Component<IProps, IState>{
     }
 
     onSend = async (messages: IMessage[] = []) => {
+        alert("MOUERTE");
         let newMessage = messages[0];
         const { user } = this.state;
-        await firebase.database().ref('/users/' + user.id + "/messages").push({ content: newMessage.text, createdAt: newMessage.createdAt.getTime(), position: 'left' } as Message);
+        await addMessage({ content: newMessage.text }, user.id);
     }
 
     render() {

@@ -1,10 +1,7 @@
 import React from 'react';
-import { StyleSheet, View, ScrollView, FlatList, Text, TouchableOpacity } from 'react-native';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 
 import firebase from 'react-native-firebase';
-import { RemoteMessage } from 'react-native-firebase/messaging';
-import User from './src/interfaces/User';
 import ListUser from './src/pages/ListUser/ListUser';
 import Chat from './src/pages/Chat/Chat';
 
@@ -18,7 +15,7 @@ const AppContainer = createAppContainer(AppNavigator);
 export default class App extends React.Component {
 
     onTokenRefreshListener;
-    messageListener;
+    notificationListener;
 
     async componentWillMount() {
         const fcmToken = await firebase.messaging().getToken();
@@ -32,18 +29,7 @@ export default class App extends React.Component {
 
         const enabled = await firebase.messaging().hasPermission();
         if (enabled) {
-            this.messageListener = firebase.messaging().onMessage((message: RemoteMessage) => {
-                let notification = new firebase.notifications.Notification()
-                    .setNotificationId('notificationId')
-                    .setTitle('My notification title')
-                    .setBody('My notification body')
-                    .setData({
-                        key1: 'value1',
-                        key2: 'value2',
-                    });
-                notification.android.setChannelId("giovanniscarpellino");
-                firebase.notifications().displayNotification(notification);
-            });
+            this.createNotificationListeners();
         } else {
             try {
                 await firebase.messaging().requestPermission();
@@ -53,7 +39,24 @@ export default class App extends React.Component {
 
     componentWillUnmount() {
         this.onTokenRefreshListener();
-        if (this.messageListener) this.messageListener();
+        if (this.notificationListener) this.notificationListener();
+    }
+
+    // Notification listener
+    async createNotificationListeners() {
+        this.notificationListener = firebase.notifications().onNotification((notification) => {
+            const { title, body } = notification;
+            this.buildNotification(title, body);
+        });
+    }
+
+    buildNotification(title, body) {
+        const notification = new firebase.notifications.Notification()
+            .setTitle(title)
+            .setBody(body)
+            .setSound('default');
+        notification.android.setChannelId("giovanniscarpellino");
+        firebase.notifications().displayNotification(notification);
     }
 
     render() {
