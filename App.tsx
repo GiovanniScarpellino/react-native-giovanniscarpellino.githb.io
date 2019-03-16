@@ -4,6 +4,7 @@ import { createStackNavigator, createAppContainer } from 'react-navigation';
 import firebase from 'react-native-firebase';
 import ListUser from './src/pages/ListUser/ListUser';
 import Chat from './src/pages/Chat/Chat';
+import { updateDeviceToken } from './src/controllers/tokens';
 
 const AppNavigator = createStackNavigator({
     First: { screen: ListUser },
@@ -20,11 +21,11 @@ export default class App extends React.Component {
     async componentWillMount() {
         const fcmToken = await firebase.messaging().getToken();
         if (fcmToken) {
-            await firebase.database().ref('/token').set(fcmToken);
+            await updateDeviceToken(fcmToken);
         }
 
         this.onTokenRefreshListener = firebase.messaging().onTokenRefresh(async (fcmToken) => {
-            await firebase.database().ref('/token').set(fcmToken);
+            await updateDeviceToken(fcmToken);
         });
 
         const enabled = await firebase.messaging().hasPermission();
