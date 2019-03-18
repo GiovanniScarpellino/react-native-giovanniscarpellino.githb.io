@@ -54,14 +54,17 @@ export default class ListUser extends React.Component<IProps, IState> {
                         data={this.state.users}
                         renderItem={(item) => {
                             const messages = item.item.messages;
-                            const lastMessage: Message = messages[Object.keys(messages)[0]];
-                            let itemStyle = styles.item;
-                            if (lastMessage.position === 'left') itemStyle = { ...itemStyle, ...styles.newMessage};
-                            return (
-                                <TouchableOpacity onPress={() => this.gotToChat(item.item)} style={itemStyle}>
-                                    <Text>{lastMessage && lastMessage.content}</Text>
-                                </TouchableOpacity>
-                            )
+                            if (messages) {
+                                const lastMessage: Message = messages[Object.keys(messages)[0]];
+                                let itemStyle = styles.item;
+                                if (lastMessage.position === 'left') itemStyle = { ...itemStyle, ...styles.newMessage };
+                                return (
+                                    <TouchableOpacity onPress={() => this.gotToChat(item.item)} style={itemStyle}>
+                                        <Text>{lastMessage && lastMessage.content}</Text>
+                                    </TouchableOpacity>
+                                )
+                            }
+                            return <></>;
                         }}
                     />
                 </View>
@@ -89,6 +92,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#E7E7E7",
         padding: 15,
         marginBottom: 15,
+        overflow: 'hidden',
     },
     newMessage: {
         backgroundColor: "#08ad10",
