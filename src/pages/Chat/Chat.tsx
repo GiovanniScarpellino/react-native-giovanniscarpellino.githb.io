@@ -48,7 +48,8 @@ export default class Chat extends React.Component<IProps, IState>{
     onSend = async (messages: IMessage[] = []) => {
         let newMessage = messages[0];
         const { user } = this.state;
-        await addMessage({ content: newMessage.text }, user.id);
+        let userMessages = this.state.messages.filter(message => message.user._id === 0);
+        await addMessage({ content: newMessage.text }, user.id, userMessages[userMessages.length - 1].text);
     }
 
     render() {

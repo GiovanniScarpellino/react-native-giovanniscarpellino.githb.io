@@ -2,13 +2,21 @@ import React from 'react';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 
 import firebase from 'react-native-firebase';
+import Loading from './src/pages/Loading/Loading';
+import Auth from './src/pages/Auth/Auth';
 import ListUser from './src/pages/ListUser/ListUser';
 import Chat from './src/pages/Chat/Chat';
+import ListQuestion from './src/pages/ListQuestion/ListQuestion';
+import FAQ from './src/pages/FAQ/FAQ';
 import { updateDeviceToken } from './src/controllers/tokens';
 
 const AppNavigator = createStackNavigator({
-    First: { screen: ListUser },
+    First: { screen: Loading },
+    Auth,
+    ListUser,
     Chat,
+    FAQ,
+    ListQuestion,
 });
 
 const AppContainer = createAppContainer(AppNavigator);
