@@ -45,7 +45,7 @@ export default class PhoneAuth extends Component<IProps, IState> {
 
             this.redirectToListUser();
         } catch (e) {
-            alert("ERROR");
+            alert("Something wrong...");
         }
         this.setState({ isSigninInProgress: false });
     }

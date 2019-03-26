@@ -24,7 +24,7 @@ export default class Chat extends React.Component<IProps, IState>{
         this.state = {
             loading: false,
             question: question.question || '',
-            visibleOnWeb: question.visibleOnWeb,
+            visibleOnWeb: question.visibleOnWeb || false,
             response: question.response || '',
             email: question.email || '',
             id: question.id || '',
@@ -69,7 +69,7 @@ export default class Chat extends React.Component<IProps, IState>{
                             value={this.state.response}
                             style={styles.textArea} />
 
-                        <Button title="Envoyer" onPress={this.handleSubmit} disabled={this.state.response.length === 0} loading={this.state.loading} />
+                        <Button title="Update" onPress={this.handleSubmit} disabled={this.state.response.length === 0} loading={this.state.loading} />
                     </View>
                 </ScrollView>
             </View>

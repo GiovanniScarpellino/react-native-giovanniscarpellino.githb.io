@@ -127,16 +127,14 @@ android {
             keyPassword 'android'
             storePassword 'android'
         }
-      /*
-    release {
-        if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
-            storeFile file(MYAPP_RELEASE_STORE_FILE)
-            storePassword MYAPP_RELEASE_STORE_PASSWORD
-            keyAlias MYAPP_RELEASE_KEY_ALIAS
-            keyPassword MYAPP_RELEASE_KEY_PASSWORD
-        }
-    }
-    */
+      release {
+          // if (project.hasProperty('my-release-key.keystore')) {
+              storeFile file('my-release-key.keystore')
+              keyAlias 'giovanni'
+              keyPassword 'giovanni'
+              storePassword 'giovanni'
+          // }
+      }
   }
   splits {
     abi {
@@ -150,11 +148,12 @@ android {
     release {
       minifyEnabled enableProguardInReleaseBuilds
       proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+      signingConfig signingConfigs.release
     }
     debug {
       minifyEnabled false
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-    signingConfig signingConfigs.debug
+      signingConfig signingConfigs.debug
     }
   }
   // applicationVariants are e.g. debug, release
